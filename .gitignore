@@ -1,0 +1,7 @@
+install/*
+build/*
+map/*
+
+!install/.gitkeep
+!build/.gitkeep
+!map/.gitkeep

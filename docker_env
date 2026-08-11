@@ -1,0 +1,27 @@
+# --------------
+# ROS settings
+# --------------
+ROS_DOMAIN_ID=1
+ROS_LOCALHOST_ONLY=0
+RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
+
+
+# ----------------------------
+# Kachaka connection setting
+# ----------------------------
+KACHAKA_NAME="er_kachaka"
+KACHAKA_IP=192.168.8.11
+
+
+# ----------------
+# Launch arguments
+# ----------------
+SHELF_TYPE=0
+USE_RVIZ=True
+USE_TOF_POINTS=True
+
+
+# --------------
+# DO NOT EDIT!
+# --------------
+GRPC_PORT=26400
