@@ -51,7 +51,7 @@
     ```
 
 1. **ローカル環境の環境変数を設定する**<br>
-    　[Docker 環境の環境変数](../docker_env) と同じ設定をローカル環境でも使用する場合は，以下の内容を `~/.bashrc` の末尾に追記してください．`KACHAKA_IP` は接続する Kachaka の IP アドレスに変更してください．
+    　[環境変数の設定方法](./setup_env.md) に記述されている環境変数が必要となります．以下の内容を `~/.bashrc` の末尾に追記してください．`KACHAKA_IP` は接続する Kachaka の IP アドレスに変更してください．
     ```bash
     export ROS_DOMAIN_ID=1
     export ROS_LOCALHOST_ONLY=0
