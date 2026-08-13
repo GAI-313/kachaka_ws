@@ -1,4 +1,4 @@
-# 🤖 ROS2 環境をつかいセットアップする方法
+# 🤖ROS2 環境をつかいセットアップする方法
 
 > [!IMPORTANT]
 > 　このリポジトリは **Ubuntu 22.04** 専用です．本セットアップを行う前に [**ROS2 Humble インストールドキュメント**](https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debs.html) を参考に ROS2 Humble をインストールしてください．<br>
