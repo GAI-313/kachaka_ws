@@ -1,3 +1,4 @@
 [submodule "src/erasers_kachaka"]
 	path = src/erasers_kachaka
 	url = https://github.com/trcp/erasers_kachaka.git
+	branch = humble
