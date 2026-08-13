@@ -10,6 +10,16 @@
     git clone --recursive https://github.com/GAI-313/kachaka_ws.git
     ```
 
+1. **セットアップに必要なコマンドを確認する**<br>
+    　Ubuntu 22.04 に ROS 2 Humble をインストールしたうえで，`git`，`vcs`，`colcon`，`pip`，`protoc`，`grpc_cpp_plugin` を使用できる状態にしてください．ROS 2 Humble のインストール方法は，[ROS2 Humble インストールドキュメント](https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debs.html)を参照してください．
+    　`protoc` と gRPC のビルドに必要なパッケージを，以下のコマンドでインストールしてください．
+    ```bash
+    sudo apt update
+    ```
+    ```bash
+    sudo apt install -y libprotobuf-dev libgrpc++-dev nlohmann-json3-dev protobuf-compiler-grpc
+    ```
+
 1. **`thirdparty` ディレクトリを作成する**<br>
     　以下のコマンドを実行して `kachaka_ws` 内に `thirdparty` ディレクトリを作成してください．
     ```bash
@@ -22,7 +32,23 @@
     vcs import thirdparty < src/erasers_kachaka/depends.repos
     ```
 
-1. **依存関係パッケージを自動インストールする**<br>
+1. **protobuf から gRPC のソースコードを生成する**<br>
+    　`kachaka-api` の protobuf 定義から，`kachaka_grpc_ros2_bridge` が使用する C++ ソースコードを生成してください．
+    ```bash
+    mkdir -p thirdparty/kachaka-api/ros2/kachaka_grpc_ros2_bridge/gen-src
+    protoc -I thirdparty/kachaka-api/protos \
+      --grpc_out=thirdparty/kachaka-api/ros2/kachaka_grpc_ros2_bridge/gen-src \
+      --plugin=protoc-gen-grpc=/usr/bin/grpc_cpp_plugin \
+      --cpp_out=thirdparty/kachaka-api/ros2/kachaka_grpc_ros2_bridge/gen-src \
+      thirdparty/kachaka-api/protos/*.proto
+    ```
+
+1. **rosdep を初期化して依存関係パッケージを自動インストールする**<br>
+    　`rosdep` を初めて使用する場合は，以下のコマンドを一度だけ実行してください．既に初期化済みというエラーが表示された場合は，`rosdep update` へ進んでください．
+    ```bash
+    sudo rosdep init
+    rosdep update
+    ```
     　以下のコマンドを実行して `apt` パッケージを更新してください．
     ```bash
     sudo apt update
@@ -33,21 +59,23 @@
     ```
     　以下のコマンドを実行して `rosdep` を使用して依存関係パッケージをインストールします．インストール完了には時間がかかります．
     ```bash
-    rosdep install -y -i --from-path .
+    rosdep install -y -i --from-path thirdparty
+    rosdep install -y -i --from-path src \
+      --skip-keys "emcl2 rclpy_util kachaka_grpc_ros2_bridge kachaka_description kachaka_interfaces kachaka_shelf_description"
     ```
-    　`rosdep` の初回実行時に初期化されていないというエラーが表示された場合は，以下のコマンドを実行してから，もう一度 `rosdep install` を実行してください．
+    　`rosdep update` に失敗する場合は，インターネット接続とプロキシ設定を確認してから再実行してください．`src` の依存関係解決時に上記の `skip-keys` 対象についてエラーが表示された場合は，指定漏れがないことを確認してください．
+
+1. **`kachaka-api` のソースコードを置き換える**<br>
+    　プロジェクト固有の TF ブリッジ実装を `kachaka-api` 側へコピーしてください．
     ```bash
-    sudo rosdep init
+    cp src/erasers_kachaka/customs/dynamic_tf_bridge.cpp \
+      thirdparty/kachaka-api/ros2/kachaka_grpc_ros2_bridge/src/dynamic_tf_bridge.cpp
     ```
-    ```bash
-    rosdep update
-    ```
-    　`sudo rosdep init` で既に初期化されているというエラーが表示された場合は，そのまま `rosdep update` を実行してください．`rosdep update` に失敗する場合は，インターネット接続とプロキシ設定を確認してから再実行してください．
 
 1. **Python 依存関係をインストールする**<br>
     　以下のコマンドを実行して Python の依存関係をインストールします．
     ```bash
-    pip install -r src/erasers_kachaka/requirements.txt
+    pip install -r src/erasers_kachaka/requirements.txt ipython
     ```
 
 1. **ローカル環境の環境変数を設定する**<br>
@@ -71,7 +99,7 @@
 1. **ワークスペースをビルドする**<br>
     　以下のコマンドを実行してワークスペースをビルドします．
     ```bash
-    colcon build --symlink-install --packages-up-to erasers_kachaka_brngup
+    colcon build --symlink-install --packages-up-to erasers_kachaka_bringup
     ```
     　ビルドが完了したらセットアップ完了です．
     　ビルド後は以下のコマンドでワークスペースを通してください．
