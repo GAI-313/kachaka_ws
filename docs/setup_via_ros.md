@@ -12,13 +12,7 @@
 
 1. **セットアップに必要なコマンドを確認する**<br>
     　Ubuntu 22.04 に ROS 2 Humble をインストールしたうえで，`git`，`vcs`，`colcon`，`pip`，`protoc`，`grpc_cpp_plugin` を使用できる状態にしてください．ROS 2 Humble のインストール方法は，[ROS2 Humble インストールドキュメント](https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debs.html)を参照してください．
-    　`protoc` と gRPC のビルドに必要なパッケージを，以下のコマンドでインストールしてください．
-    ```bash
-    sudo apt update
-    ```
-    ```bash
-    sudo apt install -y libprotobuf-dev libgrpc++-dev nlohmann-json3-dev protobuf-compiler-grpc
-    ```
+    　ワークスペース内の依存関係パッケージは，後述する `rosdep install` でインストールします．
 
 1. **`thirdparty` ディレクトリを作成する**<br>
     　以下のコマンドを実行して `kachaka_ws` 内に `thirdparty` ディレクトリを作成してください．
