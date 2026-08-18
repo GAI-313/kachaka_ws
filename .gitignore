@@ -1,7 +1,13 @@
 install/*
 build/*
 map/*
+log/*
 
 !install/.gitkeep
 !build/.gitkeep
 !map/.gitkeep
+
+# pixi environments
+thirdparty/**
+.pixi/*
+!.pixi/config.toml

@@ -1,0 +1,111 @@
+[workspace]
+authors = ["GAI-313 <nakatogawagai@gmail.com>"]
+channels = ["conda-forge", "robostack-humble"]
+name = "kachaka_ws"
+platforms = ["linux-64"]
+version = "0.1.0"
+
+[activation]
+scripts = ["install/setup.sh"]
+
+[activation.env]
+# --------------
+# ROS settings
+# --------------
+ROS_DOMAIN_ID="1"
+ROS_LOCALHOST_ONLY="0"
+RMW_IMPLEMENTATION="rmw_cyclonedds_cpp"
+
+
+# ----------------------------
+# Kachaka connection setting
+# ----------------------------
+KACHAKA_NAME="er_kachaka"
+KACHAKA_IP="192.168.0.100"
+
+
+# ----------------
+# Launch arguments
+# ----------------
+SHELF_TYPE="0"
+USE_RVIZ="True"
+USE_TOF_POINTS="True"
+
+
+# --------------
+# DO NOT EDIT!
+# --------------
+GRPC_PORT="26400"
+API_GRPC_BRIDGE_SERVER_URI="${KACHAKA_IP}:${GRPC_PORT}"
+PYTHONPATH="${PIXI_PROJECT_ROOT}/thirdparty/kachaka-api/python:${PYTHONPATH}"
+
+
+[tasks]
+vcs = "vcs import thirdparty < src/erasers_kachaka/depends.repos"
+gen_protos = { cmd = "mkdir -p thirdparty/kachaka-api/ros2/kachaka_grpc_ros2_bridge/gen-src && protoc -I thirdparty/kachaka-api/protos --grpc_out=thirdparty/kachaka-api/ros2/kachaka_grpc_ros2_bridge/gen-src --plugin=protoc-gen-grpc=$CONDA_PREFIX/bin/grpc_cpp_plugin --cpp_out=thirdparty/kachaka-api/ros2/kachaka_grpc_ros2_bridge/gen-src thirdparty/kachaka-api/protos/*.proto", description = "Generate C++ and gRPC sources from kachaka-api protobuf definitions", depends-on = ["vcs"] }
+modifire = { cmd = "cp src/erasers_kachaka/customs/dynamic_tf_bridge.cpp thirdparty/kachaka-api/ros2/kachaka_grpc_ros2_bridge/src/dynamic_tf_bridge.cpp", depends-on = ["gen_protos"] }
+colcon_build = { cmd = "colcon build --symlink-install --packages-up-to erasers_kachaka_bringup --packages-ignore cartographer_ros cartographer_ros_msgs cartographer_rviz --merge-install --cmake-clean-cache --cmake-args -DPython3_EXECUTABLE=\"$CONDA_PREFIX/bin/python\" \"-DCMAKE_CXX_FLAGS=-include cstdint\" -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_BUILD_TYPE=Release", depends-on = ["modifire"] }
+colcon_build_headless = { cmd = "colcon build --symlink-install --packages-up-to erasers_kachaka_bringup --packages-ignore cartographer_ros cartographer_ros_msgs cartographer_rviz erasers_kachaka_teleop --merge-install --cmake-clean-cache --cmake-args -DPython3_EXECUTABLE=\"$CONDA_PREFIX/bin/python\" \"-DCMAKE_CXX_FLAGS=-include cstdint\" -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_BUILD_TYPE=Release", depends-on = ["modifire"] }
+bringup = "ros2 launch erasers_kachaka_bringup bringup.launch.py"
+
+## Multi environments: headless < desktop < education (default)
+[environments]
+headless = ["headless"]
+desktop = ["desktop", "headless"]
+education = ["education", "desktop", "headless"]
+default = ["education", "desktop", "headless"]
+
+[feature.headless.activation.env]
+USE_RVIZ="False"
+
+[feature.desktop.activation.env]
+USE_RVIZ="True"
+
+[feature.headless.dependencies]
+# ROS 2／Robostack の親依存
+ros-humble-ros-base = "*"
+ros-dev-tools = "*"
+vcstool = "*"
+rosdep = "*"
+setuptools = ">=65,<70"
+ros-humble-xacro = "*"
+ros-humble-robot-state-publisher = "*"
+ros-humble-joint-state-publisher = "*"
+ros-humble-depth-image-proc = "*"
+ros-humble-tf-transformations = "*"
+ros-humble-navigation2 = "*"
+ros-humble-nav2-common = "*"
+ros-humble-nav2-bringup = "*"
+ros-humble-nav2-map-server = "*"
+ros-humble-robot-localization = "*"
+ros-humble-slam-toolbox = "*"
+ros-humble-rosbag2-storage-mcap = "*"
+ros-humble-image-geometry = "*"
+ros-humble-cartographer-ros = "*"
+
+# kachaka-api のビルド依存（conda-forge）
+libgrpc = ">=1.78,<1.79"
+grpcio = ">=1.78,<1.79"
+nlohmann_json = "*"
+
+# Python 実行時依存
+python = ">=3.12,<3.13"
+numpy = ">=1.22,<2"
+scipy = ">=1.13"
+matplotlib = "*"
+transforms3d = "*"
+
+[feature.desktop.dependencies]
+# GUI（RViz／RQT／可視化補助）
+ros-humble-rviz2 = "*"
+ros-humble-rqt = "*"
+mesa-libgl-devel-conda-x86_64 = "*"
+
+# 現行 desktop 環境のドキュメント依存
+sphinx = "*"
+
+[feature.education.dependencies]
+ipython = "*"
+
+[feature.education.activation]
+scripts = ["scripts/register_ipython_profile.sh"]
