@@ -10,7 +10,7 @@ RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
 # Kachaka connection setting
 # ----------------------------
 KACHAKA_NAME="er_kachaka"
-KACHAKA_IP=192.168.8.11
+KACHAKA_IP=192.168.3.90
 
 
 # ----------------

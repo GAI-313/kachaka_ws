@@ -21,7 +21,7 @@
 1. **ワークスペースをビルドする**<br>
     　以下のコマンドを実行して， `scripts/colcon_build.sh` を実行するとワークスペースをビルドします．
     ```bash
-    ./scrips/colcon_build.sh
+    ./scripts/colcon_build.sh
     ```
 
 1. **`docker_env` を編集して Kachaka との接続設定をする**<br>
@@ -31,6 +31,6 @@
 1. **起動確認をする**<br>
     　次のコマンドを実行して Kachaka を起動します．このとき Kachaka から `「eR@sers Kachaka スタート！Domain Number is XX」` と発話したら成功です．
     ```bash
-    ./scrips/bringup.sh
+    ./scripts/bringup.sh
     ```
     　また，`docker_env` の `USE_RVIZ` が `True` ならば起動時に RViz が表示され，視覚化されたロボット情報が表示されます．RViz の操作方法については [RViz の操作方法](./about_kachaka_rviz.md) を参照してください．
