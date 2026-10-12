@@ -26,6 +26,16 @@
     vcs import thirdparty < src/erasers_kachaka/depends.repos
     ```
 
+1. **protobuf などの依存関係をインストールする**<br>
+    ```bash
+    sudo apt update &&\
+    sudo apt install -y \
+        libprotobuf-dev \
+        libgrpc++-dev \
+        nlohmann-json3-dev \
+        protobuf-compiler-grpc
+    ```
+
 1. **protobuf から gRPC のソースコードを生成する**<br>
     　`kachaka-api` の protobuf 定義から，`kachaka_grpc_ros2_bridge` が使用する C++ ソースコードを生成してください．
     ```bash
