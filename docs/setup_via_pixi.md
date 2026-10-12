@@ -1,5 +1,11 @@
 # Pixi を使いセットアップする方法
 
+1. **`kachaka_ws` をクローンする**<br>
+    　以下のコマンドを実行して `kachaka_ws` をクローン（ダウンロード）してください．
+    ```bash
+    git clone --recursive https://github.com/GAI-313/kachaka_ws.git
+    ```
+    
 1. **pixi をインストールする**<br>
     　以下のコマンドを実行して `pixi` をインストールしてください．
     ```bash
