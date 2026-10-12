@@ -16,6 +16,12 @@
     git clone --recursive https://github.com/GAI-313/kachaka_ws.git
     ```
 
+1. **`thirdparty` ディレクトリを作成する**<br>
+    　以下のコマンドを実行して `kachaka_ws` 内に `thirdparty` ディレクトリを作成してください．
+    ```bash
+    mkdir thirdparty
+    ```
+    
 1. **ワークスペースを構築する**<br>
     　以下のコマンドを実行してワークスペースを構築します．このコマンドでは依存関係のインストールからパッケージのビルドまで一括で行われます．
     ```bash
@@ -29,4 +35,18 @@
     　以下のコマンドを実行して `erasers_kahcaka` を起動します．
     ```bash
     pixi run bringup
+    ```
+
+## トラブルシューティング
+
+- **`pixi run colcon_build` 実行時にエラーが発生する．**<br>
+    　以下のエラーが発生した場合，`pixi` の更新が必要です．
+    ```bash
+        Error:   × Failed to load lock file from `/Users/gai/kachaka_ws/pixi.lock`
+      ╰─▶ The lock file version is 7, but only up to including version 6 is supported by the current version.
+      help: Please update pixi to the latest version and try again.
+    ```
+    　pixi の更新には以下のコマンドを実施します．
+    ```bash
+    pixi self-update
     ```
