@@ -1,38 +1,69 @@
+x-preferences: &preferences
+    privileged: true
+    ipc: host
+    network_mode: host
+    tty: true
+    stdin_open: true
+
+x-environments: &environments
+    environment:
+        - DISPLAY=${DISPLAY}
+        # ROS
+        - ROS_DOMAIN_ID
+        - ROS_LOCALHOST_ONLY
+        - RMW_IMPLEMENTATION
+        # Kachaka
+        - KACHAKA_NAME
+        - KACHAKA_IP
+        - GRPC_PORT
+        - API_GRPC_BRIDGE_SERVER_URI="${KACHAKA_IP}:${GRPC_PORT}"
+        - SHELF_TYPE
+        - USE_RVIZ
+        - USE_TOF_POINTS
+        # iPython
+        - IPYTHON_DIR=$HOME/.ipython
+
+
 services:
-    erasers_kachaka:
-        privileged: true
-        ipc: host
-        network_mode: host
-        tty: true
-        stdin_open: true
-        image: erasers_kachaka
-        container_name: erasers_kachaka
+    headless:
+        image: gai313/kachaka:humble.amd64.base
+        container_name: erasers_kachaka_headless
+        <<: [*preferences, *environments]
         build:
             context: .
             dockerfile: Dockerfile
             args:
                 - ROS=humble
+                - PLATFORM=headless
+                # Do Not Edit
                 - USERNAME=${USER}
                 - GROUPNAME=${USER}
                 - UID=1000
                 - GID=1000
                 - PASSWORD
-        environment:
-            - DISPLAY=${DISPLAY}
-            # ROS
-            - ROS_DOMAIN_ID
-            - ROS_LOCALHOST_ONLY
-            - RMW_IMPLEMENTATION
-            # Kachaka
-            - KACHAKA_NAME
-            - KACHAKA_IP
-            - GRPC_PORT
-            - API_GRPC_BRIDGE_SERVER_URI="${KACHAKA_IP}:${GRPC_PORT}"
-            - SHELF_TYPE
-            - USE_RVIZ
-            - USE_TOF_POINTS
-            # iPython
-            - IPYTHON_DIR=$HOME/.ipython
+        volumes:
+            - /tmp/.X11-unix:/tmp/.X11-unix
+            - ./src:${HOME}/kachaka_ws/src
+            - ./build:${HOME}/kachaka_ws/build
+            - ./install:${HOME}/kachaka_ws/install
+            - ./map:${HOME}/map
+
+    desktop:
+        image: gai313/kachaka:humble.amd64.desktop
+        container_name: erasers_kachaka_desktop
+        <<: [*preferences, *environments]
+        build:
+            context: .
+            dockerfile: Dockerfile
+            args:
+                - ROS=humble
+                - PLATFORM=headless
+                # Do Not Edit
+                - USERNAME=${USER}
+                - GROUPNAME=${USER}
+                - UID=1000
+                - GID=1000
+                - PASSWORD
         volumes:
             - /tmp/.X11-unix:/tmp/.X11-unix
             - ./src:${HOME}/kachaka_ws/src
