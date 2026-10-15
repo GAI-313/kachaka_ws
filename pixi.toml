@@ -21,7 +21,7 @@ RMW_IMPLEMENTATION="rmw_cyclonedds_cpp"
 # Kachaka connection setting
 # ----------------------------
 KACHAKA_NAME="er_kachaka"
-KACHAKA_IP="192.168.0.100"
+KACHAKA_IP="192.168.3.90"
 
 
 # ----------------
@@ -47,6 +47,52 @@ modifire = { cmd = "cp src/erasers_kachaka/customs/dynamic_tf_bridge.cpp thirdpa
 colcon_build = { cmd = "colcon build --symlink-install --packages-up-to erasers_kachaka_bringup --packages-ignore cartographer_ros cartographer_ros_msgs cartographer_rviz --merge-install --cmake-clean-cache --cmake-args -DPython3_EXECUTABLE=\"$CONDA_PREFIX/bin/python\" \"-DCMAKE_CXX_FLAGS=-include cstdint\" -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_BUILD_TYPE=Release", depends-on = ["modifire"] }
 colcon_build_headless = { cmd = "colcon build --symlink-install --packages-up-to erasers_kachaka_bringup --packages-ignore cartographer_ros cartographer_ros_msgs cartographer_rviz erasers_kachaka_teleop --merge-install --cmake-clean-cache --cmake-args -DPython3_EXECUTABLE=\"$CONDA_PREFIX/bin/python\" \"-DCMAKE_CXX_FLAGS=-include cstdint\" -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_BUILD_TYPE=Release", depends-on = ["modifire"] }
 bringup = "ros2 launch erasers_kachaka_bringup bringup.launch.py"
+
+[target.osx-64.tasks.colcon_build]
+cmd = [
+  "colcon", "build",
+  "--symlink-install",
+  "--packages-up-to", "erasers_kachaka_bringup",
+  "--packages-ignore", "cartographer_ros", "cartographer_ros_msgs", "cartographer_rviz",
+  "--merge-install",
+  "--cmake-clean-cache",
+  "--event-handlers", "console_direct+",
+  "--cmake-args",
+  "-DPython_EXECUTABLE=$CONDA_PREFIX/bin/python",
+  "-DPython_ROOT_DIR=$CONDA_PREFIX",
+  "-DPython_FIND_FRAMEWORK=LAST",
+  "-DPython3_ROOT_DIR=$CONDA_PREFIX",
+  "-DPython3_FIND_FRAMEWORK=LAST",
+  "-DPython3_EXECUTABLE=$CONDA_PREFIX/bin/python",
+  "-DCMAKE_CXX_FLAGS=-include cstdint",
+  "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON",
+  "-DCMAKE_BUILD_TYPE=Release"
+]
+depends-on = ["modifire"]
+
+[target.osx-64.tasks.colcon_build_headless]
+cmd = [
+  "colcon", "build",
+  "--symlink-install",
+  "--packages-up-to", "erasers_kachaka_bringup",
+  "--packages-ignore", "cartographer_ros", "cartographer_ros_msgs", "cartographer_rviz", "erasers_kachaka_teleop",
+  "--merge-install",
+  "--cmake-clean-cache",
+  "--event-handlers", "console_direct+",
+  "--cmake-args",
+  "-DPython_EXECUTABLE=$CONDA_PREFIX/bin/python",
+  "-DPython_ROOT_DIR=$CONDA_PREFIX",
+  "-DPython_FIND_FRAMEWORK=LAST",
+  "-DPython3_ROOT_DIR=$CONDA_PREFIX",
+  "-DPython3_FIND_FRAMEWORK=LAST",
+  "-DPython3_EXECUTABLE=$CONDA_PREFIX/bin/python",
+  "-DCMAKE_CXX_FLAGS=-include cstdint",
+  "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON",
+  "-DCMAKE_BUILD_TYPE=Release"
+]
+depends-on = ["modifire"]
+
+
 
 ## Multi environments: headless < desktop < education (default)
 [environments]
@@ -95,14 +141,20 @@ scipy = ">=1.13"
 matplotlib = "*"
 transforms3d = "*"
 
+[feature.headless.target.osx-64.dependencies]
+numpy = ">=2.0"
+
 [feature.desktop.dependencies]
 # GUI（RViz／RQT／可視化補助）
 ros-humble-rviz2 = "*"
 ros-humble-rqt = "*"
-mesa-libgl-devel-conda-x86_64 = "*"
 
 # 現行 desktop 環境のドキュメント依存
 sphinx = "*"
+
+[feature.desktop.target.linux-64.dependencies]
+mesa-libgl-devel-conda-x86_64 = "*"
+
 
 [feature.education.dependencies]
 ipython = "*"
