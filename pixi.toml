@@ -12,16 +12,17 @@ scripts = ["install/setup.sh"]
 # --------------
 # ROS settings
 # --------------
-ROS_DOMAIN_ID="1"
+ROS_DOMAIN_ID="10"
 ROS_LOCALHOST_ONLY="0"
 RMW_IMPLEMENTATION="rmw_cyclonedds_cpp"
+CYCLONEDDS_URI = "file://$PIXI_PROJECT_ROOT/cyclonedds/osx.cyclonedds.xml"
 
 
 # ----------------------------
 # Kachaka connection setting
 # ----------------------------
 KACHAKA_NAME="er_kachaka"
-KACHAKA_IP="192.168.3.90"
+KACHAKA_IP="192.168.195.43"
 
 
 # ----------------
@@ -64,6 +65,10 @@ cmd = [
   "-DPython3_ROOT_DIR=$CONDA_PREFIX",
   "-DPython3_FIND_FRAMEWORK=LAST",
   "-DPython3_EXECUTABLE=$CONDA_PREFIX/bin/python",
+  "-DCMAKE_SHARED_LINKER_FLAGS=-L$CONDA_PREFIX/lib -lpython3.12",
+  "-DCMAKE_EXE_LINKER_FLAGS=-L$CONDA_PREFIX/lib -lpython3.12",
+  "-DCMAKE_INSTALL_RPATH=$PIXI_PROJECT_ROOT/install/lib",
+  "-DCMAKE_BUILD_WITH_INSTALL_RPATH=ON",
   "-DCMAKE_CXX_FLAGS=-include cstdint",
   "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON",
   "-DCMAKE_BUILD_TYPE=Release"
@@ -86,11 +91,18 @@ cmd = [
   "-DPython3_ROOT_DIR=$CONDA_PREFIX",
   "-DPython3_FIND_FRAMEWORK=LAST",
   "-DPython3_EXECUTABLE=$CONDA_PREFIX/bin/python",
+  "-DCMAKE_SHARED_LINKER_FLAGS=-L$CONDA_PREFIX/lib -lpython3.12",
+  "-DCMAKE_EXE_LINKER_FLAGS=-L$CONDA_PREFIX/lib -lpython3.12",
+  "-DCMAKE_INSTALL_RPATH=$PIXI_PROJECT_ROOT/install/lib",
+  "-DCMAKE_BUILD_WITH_INSTALL_RPATH=ON",
   "-DCMAKE_CXX_FLAGS=-include cstdint",
   "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON",
   "-DCMAKE_BUILD_TYPE=Release"
 ]
 depends-on = ["modifire"]
+
+[target.osx-64.tasks.bringup]
+cmd = "python -c 'import os, subprocess, sys; env=os.environ.copy(); env[\"USE_RVIZ\"]=\"False\"; env[\"DYLD_LIBRARY_PATH\"]=f\"{os.getcwd()}/install/lib:{env.get(\"CONDA_PREFIX\")}/lib:\"+env.get(\"DYLD_LIBRARY_PATH\", \"\"); sys.exit(subprocess.run([\"ros2\", \"launch\", \"erasers_kachaka_bringup\", \"bringup.launch.py\", \"use_rviz:=False\"], env=env).returncode)'"
 
 
 
